@@ -1,1 +1,1 @@
-# WordLinkValidator
+# NewsletterApp
