@@ -1,7 +1,14 @@
-﻿using Microsoft.Office.Interop.Word;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Windows;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.CodeDom;
+using System.Xml;
+using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Http;
+using System.Collections;
 
 namespace WordLinkValidator
 {
@@ -23,7 +30,7 @@ namespace WordLinkValidator
         {
             OpenFileDialog openFileDialog = new OpenFileDialog {
                 Multiselect = true,
-                Filter      = "Word files (*.doc)|*.doc|Word files (*.docx)|*.docx"
+                Filter      = "Word files|*.doc;*.docx"
             };
 			
             if (openFileDialog.ShowDialog() != true) {
@@ -41,58 +48,114 @@ namespace WordLinkValidator
                 return;
             }
 
-            string text                                    = "";
-            Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
+            dataGridWordList.Items.Clear();
+            dataGridWordList.Items.Refresh();
 
             foreach (string file in filesToAnalyze) {
-                Microsoft.Office.Interop.Word.Document doc = word.Documents.Open(file);
+                WordprocessingDocument wordDocument = WordprocessingDocument.Open(file, false);
 
-                // Paragraphs
-                foreach (Microsoft.Office.Interop.Word.Paragraph para in doc.Paragraphs) {
-                    Microsoft.Office.Interop.Word.Range range = para.Range;
-                    text                                      = range.Text;
+                if (wordDocument.MainDocumentPart == null) {
+                    continue;
+                }
 
-                    if (hasLink(text)) {
-                        string[][] links = findLinks(text);
+                System.IO.StreamReader sr = new System.IO.StreamReader(
+                    wordDocument.MainDocumentPart.GetStream()
+                );
+                string xml = sr.ReadToEnd();
 
-                        foreach (string[] link in links) {
-                            // @TODO: validate link
-                            // @TODO: add validation result to list
-                        }
+                // Handle content links
+                foreach (HyperlinkRelationship link 
+                    in wordDocument.MainDocumentPart.HyperlinkRelationships
+                ) {
+                    this.handleLink("Content", link, file, xml);
+                }
+
+                // Handle header/footer links
+                string headerFooterRelationshipId;
+                foreach (HeaderFooterReferenceType headerFooterRef 
+                    in wordDocument.MainDocumentPart.Document.Descendants<HeaderFooterReferenceType>()
+                ) {
+                    if (headerFooterRef == null || headerFooterRef.Id == null || headerFooterRef.Id.Value == null) {
+                        continue;
+                    }
+
+                    headerFooterRelationshipId = headerFooterRef.Id.Value;
+                    foreach (HyperlinkRelationship hfLink 
+                        in wordDocument.MainDocumentPart.GetPartById(headerFooterRelationshipId).HyperlinkRelationships
+                    ) {
+                        this.handleLink("Header/Footer", hfLink, file, xml);
                     }
                 }
 
-                // Footnotes
-                foreach (Microsoft.Office.Interop.Word.Footnote footnote in doc.Footnotes) {
+                if (wordDocument.MainDocumentPart.WordprocessingCommentsPart != null) {
+                    foreach (HyperlinkRelationship link
+                        in wordDocument.MainDocumentPart.WordprocessingCommentsPart.HyperlinkRelationships
+                    ) {
+                        this.handleLink("Comment", link, file, xml);
+                    }
                 }
 
-                // Endings
-                foreach (Microsoft.Office.Interop.Word.Endnote ending in doc.Endnotes) {
+                if (wordDocument.MainDocumentPart.FootnotesPart != null) {
+                    foreach (HyperlinkRelationship link
+                        in wordDocument.MainDocumentPart.FootnotesPart.HyperlinkRelationships
+                    ) {
+                        this.handleLink("Footnote", link, file, xml);
+                    }
                 }
 
-                // doc.Hyperlinks
-               
-
-                // @TODO: check header and footer
-
-                doc.Close();
+                if (wordDocument.MainDocumentPart.EndnotesPart != null) {
+                    foreach (HyperlinkRelationship link
+                        in wordDocument.MainDocumentPart.EndnotesPart.HyperlinkRelationships
+                    ) {
+                        this.handleLink("Endnote", link, file, xml);
+                    }
+                }
             }
-
-            word.Quit();
 
             filesToAnalyze = Array.Empty<string>();
         }
 
-        private static bool hasLink(string text)
+        private async void handleLink(string location, HyperlinkRelationship link, string file, string xml)
         {
-            return text.Contains("http://")
-                || text.Contains("https://")
-                || text.Contains("file://");
+            string linkDestination = link.Uri.ToString();
+
+            Regex rx = new Regex("(r:id=\\\"" + link.Id + "\\\".*?<w:t>)(.*?)(</w:t>)");
+            MatchCollection matches = rx.Matches(xml);
+
+            string linkName = "";
+            if (matches.Count > 0 && matches[0].Groups.Count > 2) {
+                linkName = matches[0].Groups[2].Value;
+            }
+
+            string status = linkIsReachable(linkDestination) ? "OK" : "ERROR";
+
+            dataGridWordList.Items.Add(new
+            {
+                Status = status,
+                Type = linkDestination.StartsWith("http") ? "URL" : "Local",
+                Location = location,
+                File = file,
+                Name = linkName,
+                Link = linkDestination
+            });
         }
 
-        private static string[][] findLinks(string text)
+        private static bool linkIsReachable(string url)
         {
-            return new string[][] { Array.Empty<string>() };
+            HttpClient client = new HttpClient();
+            client.Timeout    = TimeSpan.FromSeconds(5);
+
+            try {
+                HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+            } catch (Exception) {
+                return false;
+            }
+
+            return false;
         }
     }
 }

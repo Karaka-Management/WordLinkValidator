@@ -19,11 +19,14 @@
             <Button x:Name="btnValidate" Content="Validate" Margin="0,0,10,0" VerticalAlignment="Center" Click="btnValidate_Click" HorizontalAlignment="Right" Width="75"/>
         </Grid>
         <Grid Margin="0,58,0,0" VerticalAlignment="Top">
-            <DataGrid x:Name="dataGridWordList" Margin="0,0,17,0" BorderThickness="0,0,0,0">
+            <DataGrid x:Name="dataGridWordList" BorderThickness="0,0,0,0" HorizontalAlignment="Stretch" Width="NaN">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Status" />
-                    <DataGridTextColumn Header="File" />
-                    <DataGridTextColumn Header="Link" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+                    <DataGridTextColumn Header="File" Binding="{Binding File}" />
+                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
+                    <DataGridTextColumn Header="Location" Binding="{Binding Location}" />
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Link" Binding="{Binding Link}" Width="1.0*" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
