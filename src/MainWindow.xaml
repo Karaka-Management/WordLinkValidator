@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WordLinkValidator"
         mc:Ignorable="d"
-        Title="Word Link Validator" Height="300" Width="600" MinWidth="350" MinHeight="475">
+        Title="Word Link Validator" Height="300" Width="600" MinWidth="350" MinHeight="475" Icon="favicon.ico">
     <Grid Background="#343a40">
         <Menu VerticalAlignment="Top" VerticalContentAlignment="Top" Grid.Column="0" Grid.Row="0">
             <MenuItem Header="File">
