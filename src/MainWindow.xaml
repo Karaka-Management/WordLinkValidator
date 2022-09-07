@@ -5,20 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WordLinkValidator"
         mc:Ignorable="d"
-        Title="Word Link Validator" Height="300" Width="372" MinWidth="350" MinHeight="475">
-    <Grid Background="#FFE6FF00">
-        <Menu Margin="0,0,0,414" VerticalAlignment="Top" VerticalContentAlignment="Top" Grid.Column="0" Grid.Row="0">
+        Title="Word Link Validator" Height="300" Width="600" MinWidth="350" MinHeight="475">
+    <Grid Background="#343a40">
+        <Menu VerticalAlignment="Top" VerticalContentAlignment="Top" Grid.Column="0" Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem x:Name="menuOpenFiles" Header="Open File(s)"/>
-                <MenuItem x:Name="menuExit" Header="Exit"/>
+                <MenuItem x:Name="menuOpenFiles" Header="Open File(s)" Click="btnSelectFile_Click"/>
+                <MenuItem x:Name="menuExit" Header="Exit" Click="menuExit_Click" />
             </MenuItem>
-            <MenuItem x:Name="menuInfo" Header="Info"/>
+            <MenuItem x:Name="menuInfo" Header="Info" Click="menuInfo_Click"/>
         </Menu>
-        <Grid Height="40" VerticalAlignment="Top" Background="Red" Margin="0,18,0,0">
-            <Button x:Name="btnSelectFile" Content="Select Files" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="84" Click="btnSelectFile_Click"/>
+        <Grid Height="40" VerticalAlignment="Top" Background="#343a40" Margin="0,28,0,0">
+            <Button x:Name="btnSelectFile" Content="Open File(s)" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Width="84" Click="btnSelectFile_Click"/>
             <Button x:Name="btnValidate" Content="Validate" Margin="0,0,10,0" VerticalAlignment="Center" Click="btnValidate_Click" HorizontalAlignment="Right" Width="75"/>
         </Grid>
-        <Grid Margin="0,58,0,0" VerticalAlignment="Top">
+        <Grid Margin="0,70,0,0" VerticalAlignment="Top">
             <DataGrid x:Name="dataGridWordList" BorderThickness="0,0,0,0" HorizontalAlignment="Stretch" Width="NaN">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
@@ -30,8 +30,8 @@
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        <Grid Background="Red" Height="40" VerticalAlignment="Bottom">
-            <TextBlock x:Name="textBlockStatus" HorizontalAlignment="Left" Margin="23,0,0,0" TextWrapping="Wrap" Text="Files:    Links:        Invalid:" VerticalAlignment="Center"/>
+        <Grid Background="#FF262A2F" Height="40" VerticalAlignment="Bottom">
+            <TextBlock x:Name="textBlockStatus" HorizontalAlignment="Left" Margin="23,0,0,0" TextWrapping="Wrap" Foreground="#e4f1fa" Text="Files: 0 Links: 0 Invalid: 0" VerticalAlignment="Center"/>
         </Grid>
     </Grid>
 </Window>
