@@ -3,12 +3,9 @@ using System;
 using System.Windows;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.CodeDom;
-using System.Xml;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Http;
-using System.Collections;
 using System.Threading.Tasks;
 using System.IO;
 using WordLinkValidator.Views;
@@ -21,9 +18,9 @@ namespace WordLinkValidator
     public partial class MainWindow : System.Windows.Window
     {
         private string[] filesToAnalyze;
-        private int linkCount = 0;
+        private int linkCount        = 0;
         private int invalidLinkCount = 0;
-        private int fileCount = 0;
+        private int fileCount        = 0;
 
         public MainWindow()
         {
