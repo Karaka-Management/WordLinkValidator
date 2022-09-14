@@ -14,7 +14,7 @@ With Karaka you have one partner who can provide many tools and software solutio
 
 ## Legal
 
-* [Terms of Service](/en/terms)
+* [Terms of Service](https://jingga.app/en/terms)
 * [License](https://github.com/Karaka-Management/WordLinkValidatorApp/blob/master/LICENSE.txt)
 
 ### Disclaimer
