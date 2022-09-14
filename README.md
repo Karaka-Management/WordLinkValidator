@@ -16,10 +16,11 @@ With Karaka you have one partner who can provide many tools and software solutio
 
 * Microsoft Windows 7 or newer
 
-### Developer dependencies
+### Developer tools
 
-* C# (WPF)
-* OpenXML
+* Language: C# (WPF)
+* Libraries: OpenXML
+* Tools: Visual Studio
 
 ## Legal
 
