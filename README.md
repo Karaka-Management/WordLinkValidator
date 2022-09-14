@@ -22,6 +22,10 @@ With Karaka you have one partner who can provide many tools and software solutio
 * Libraries: OpenXML
 * Tools: Visual Studio
 
+## Images
+
+<p align="center"><img src="https://raw.githubusercontent.com/Karaka-Management/WordLinkValidatorApp/master/img/Word_Link_Validator_splash.png" alt="UI"></p>
+
 ## Legal
 
 * [Terms of Service](https://jingga.app/en/terms)
