@@ -12,6 +12,15 @@ With Karaka you have one partner who can provide many tools and software solutio
 * Validate the availability of local and online links
 * Validate links in the header, footer, content, comments and endnotes/footnotes
 
+## Dependencies
+
+* Microsoft Windows 7 or newer
+
+### Developer dependencies
+
+* C# (WPF)
+* OpenXML
+
 ## Legal
 
 * [Terms of Service](https://jingga.app/en/terms)
