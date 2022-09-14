@@ -24,7 +24,7 @@ With Karaka you have one partner who can provide many tools and software solutio
 
 ## Images
 
-<p align="center"><img src="https://raw.githubusercontent.com/Karaka-Management/WordLinkValidatorApp/master/img/Word_Link_Validator_splash.png" alt="UI"></p>
+<p align="center"><img src="img/Word_Link_Validator_splash.png" alt="UI"></p>
 
 ## Legal
 
