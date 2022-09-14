@@ -233,6 +233,7 @@ namespace WordLinkValidator
         private void menuExit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
+            Environment.Exit(0);
         }
 
         private void menuInfo_Click(object sender, RoutedEventArgs e)
