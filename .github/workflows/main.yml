@@ -1,0 +1,44 @@
+name:  CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, 'NO_CI')"
+    strategy:
+      matrix:
+        targetplatform: [x64]
+        configuration: [Demo, Release]
+    runs-on: windows-latest
+    env:
+      Solution_Name: DocumentComparisonApp.sln
+      Wap_Project_Path: PackagingProject\PackagingProject.wapproj
+      Wap_Project_Directory: PackagingProject
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
+    - name: Create the app package
+      run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle
+      env:
+        Appx_Bundle: Always
+        Appx_Bundle_Platforms: x64
+        Appx_Package_Build_Mode: SideloadOnly
+        Configuration: ${{ matrix.configuration }}
