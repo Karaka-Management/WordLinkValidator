@@ -3,11 +3,14 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <BaseOutputPath>.\..\bin\</BaseOutputPath>
     <Configurations>Debug;Release;Demo</Configurations>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
@@ -19,12 +22,16 @@
     <DefineConstants>$(DefineConstants)TRACE;OMS_DEMO</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="favicon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
+   <ItemGroup>
     <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+   
+   <ItemGroup>
+    <Content Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
