@@ -1,18 +1,40 @@
 name:  CD
 
-on: [workflow_dispatch]
+on: 
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Release Tag'     
+        required: true
 
 env:
-  PROJECT_PATH: src/WordLinkValidatorApp.csproj
+  APP_NAME: WordLinkValidatorApp
 
 jobs:
   build: 
     runs-on: windows-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 3.1.x
-    - run: dotnet restore ${{env.PROJECT_PATH}}
-    - run: dotnet build ${{env.PROJECT_PATH}} -c Release --no-restore
-    - run: dotnet publish ${{env.PROJECT_PATH}} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true
+    - run: dotnet restore src/${{env.APP_NAME}}.csproj
+    - run: dotnet build src/${{env.APP_NAME}}.csproj -c Release --no-restore
+    - run: dotnet publish src/${{env.APP_NAME}}.csproj -c Release --self-contained -r win-x64 -p:PublishSingleFile=true
+    - run: dotnet build src/${{env.APP_NAME}}.csproj -c Demo --no-restore
+    - run: dotnet publish src/${{env.APP_NAME}}.csproj -c Demo --self-contained -r win-x64 -p:PublishSingleFile=true
+    - run: Rename-Item -Path "bin/Demo/net6.0-windows/win-x64/publish/${{env.APP_NAME}}.exe" -NewName "Demo_${{env.APP_NAME}}.exe"
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "bin/Release/net6.0-windows/win-x64/publish/*.exe,bin/Demo/net6.0-windows/win-x64/publish/*.exe"
+        tag: ${{ github.event.inputs.tags }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifactErrorsFailBuild: true
+    - uses: dev-drprasad/delete-older-releases@v0.2.0
+      with:
+        keep_latest: 3
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
